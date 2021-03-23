@@ -20,7 +20,7 @@
   <header class="header">
     <h1 class="header-title">Virtual Piano</h1>
   </header>
-  <main class="main">
+  <main class="main" id="main">
     <div class="btn-container">
       <button class="btn btn-notes btn-active">Notes</button>
       <button class="btn btn-letters">Letters</button>
@@ -42,7 +42,7 @@
         <div class="piano-key sharp" data-letter="KeyO" data-note="a♯"></div>
       </div>
     </div>
-    <button class="fullscreen openfullscreen"></button>
+    <button id='fullS' onclick="enterFullscreen('main')" class="fullscreen openfullscreen"></button>
 
     <audio data-key="KeyD" src="./assets/audio/c.mp3"></audio>
     <audio data-key="KeyF" src="./assets/audio/d.mp3"></audio>
@@ -68,5 +68,47 @@
   </footer>
   <script src="script.js"></script>
 </body>
+<script>
+   document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen || document.mozCancelFullScreen;
 
+function onFullScreenEnter() {
+  console.log("Enter fullscreen initiated from iframe");
+};
+
+function onFullScreenExit() {
+  console.log("Exit fullscreen initiated from iframe");
+};
+
+function enterFullscreen(id) {
+
+  onFullScreenEnter(id);
+
+  var el =  document.getElementById(id);
+
+  var onfullscreenchange =  function(e){
+    var fullscreenElement = document.fullscreenElement || document.mozFullscreenElement || document.webkitFullscreenElement;
+    var fullscreenEnabled = document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled;
+     console.log( 'fullscreenEnabled = ' + fullscreenEnabled, ',  fullscreenElement = ', fullscreenElement, ',  e = ', e);
+  }
+
+  el.addEventListener("fullscreenchange", onfullscreenchange);
+
+  if (el.webkitRequestFullScreen) {
+    el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+  } else {
+    el.mozRequestFullScreen();
+  }
+  document.getElementById('fullS').onclick = function(){
+    exitFullscreen(id);
+  }
+}
+
+function exitFullscreen(id) {
+  onFullScreenExit(id);
+  document.cancelFullScreen();
+  document.querySelector('#'+id + ' button').onclick = function(){
+    enterFullscreen(id);
+  }
+}
+</script>
 </html>
