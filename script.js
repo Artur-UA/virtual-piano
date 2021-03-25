@@ -1,3 +1,17 @@
+const fullScreen = document.querySelector(".fullscreen");
+
+const toggleScreen = () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else if (document.fullscreenEnabled) {
+        document.exitFullscreen();
+    }
+}
+
+fullScreen.addEventListener('click', toggleScreen);
+
+
+
 let activePiano = function (e) {
     const audio = document.querySelector(`audio[data-key=${e.code}]`);
     const key = document.querySelector(`.piano-key[data-letter="${e.code}"]`);
@@ -28,11 +42,11 @@ keys.forEach(key => key.addEventListener('transitionend', removeTransition))
 
 
 
-let fullScreen = document.querySelector('.fullscreen')
+/* let fullScreen = document.querySelector('.fullscreen')
 
 fullScreen.addEventListener("fullscreenchange", function(e){
     console.log('статус fullscreen = ');
-  });
+  }); */
 
 let buttonRight = document.querySelector('.btn-notes');
 let buttonLeft = document.querySelector('.btn-letters');
