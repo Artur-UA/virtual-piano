@@ -1,4 +1,7 @@
 const fullScreen = document.querySelector(".fullscreen");
+const btn = document.querySelector(".btn-container");
+const btnCollection = document.querySelectorAll(".btn");
+const piano = document.getElementById("piano");
 
 const toggleScreen = () => {
     if (!document.fullscreenElement) {
@@ -10,16 +13,26 @@ const toggleScreen = () => {
 
 fullScreen.addEventListener('click', toggleScreen);
 
-
-
 let activePiano = function (e) {
     const audio = document.querySelector(`audio[data-key=${e.code}]`);
     const key = document.querySelector(`.piano-key[data-letter="${e.code}"]`);
     if (!audio) return;
+    if (e.repeat) return;
     audio.currentTime = 0;
-    audio.play()
-    key.classList.add('piano-key-active')
+    audio.play();
+    key.classList.add('piano-key-active');
 }
+
+function removeTransition(e) {
+    if (e.propertyName !== 'transform') return;
+    this.classList.remove('piano-key-active')
+}
+
+window.addEventListener('keydown', activePiano)
+
+const keys = document.querySelectorAll('.piano-key');
+keys.forEach(key => key.addEventListener('transitionend', removeTransition))
+
 
 let activePianoMouse = function (e) {
     const audio = document.querySelector(`audio[data-key=${e.target.dataset.letter}]`);
@@ -29,26 +42,9 @@ let activePianoMouse = function (e) {
     audio.play()
     key.classList.add('piano-key-active')
 }
-
-function removeTransition(e) {
-    if (e.propertyName !== 'transform') return;
-    this.classList.remove('piano-key-active')
-}
-
-window.addEventListener('keydown', activePiano)
 window.addEventListener('click', activePianoMouse)
-const keys = document.querySelectorAll('.piano-key');
-keys.forEach(key => key.addEventListener('transitionend', removeTransition))
 
-
-
-/* let fullScreen = document.querySelector('.fullscreen')
-
-fullScreen.addEventListener("fullscreenchange", function(e){
-    console.log('статус fullscreen = ');
-  }); */
-
-let buttonRight = document.querySelector('.btn-notes');
+/* let buttonRight = document.querySelector('.btn-notes');
 let buttonLeft = document.querySelector('.btn-letters');
 
 function addClassRight(){
@@ -62,3 +58,29 @@ function addClassLeft(){
 }
 buttonRight.addEventListener('click', addClassRight);
 buttonLeft.addEventListener('click', addClassLeft)
+
+keys.forEach((elem) => {
+    elem.addEventListener("mousedown", activePiano);
+}); */
+
+btn.addEventListener("click", event => {
+    btnCollection.forEach(elem => {
+        elem.classList.remove('btn-active')
+    })
+    event.target.classList.add('btn-active');
+    if (event.target.classList.contains("btn-letters")) {
+        keys.forEach((elem) => {
+            elem.classList.add("piano-key-letter");
+        })
+    } else {
+        keys.forEach((elem) => {
+            elem.classList.remove("piano-key-letter")
+        })
+    }
+});
+
+piano.addEventListener("mouseout", (event) => {
+    if (event.target.classList.contains("piano-key")) {
+        event.target.classList.remove("piano-key-active");
+    }
+});
